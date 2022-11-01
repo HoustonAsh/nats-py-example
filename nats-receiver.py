@@ -5,7 +5,7 @@ import nats
 
 
 async def main():
-  nc = await nats.connect("nats://localhost:4222", connect_timeout=1000)
+  nc = await nats.connect("tls://localhost:4222")
 
   async def request_handler(msg):
     print('[request_handler]')
@@ -15,7 +15,7 @@ async def main():
     print(f"Received a message on '{subject} {reply}': {data}")
     await nc.publish(reply, b'I can help')
 
-  sub = await nc.subscribe("qparking-device-commands")
+  sub = await nc.subscribe("hello")
 
   while True:
     try:
@@ -23,7 +23,8 @@ async def main():
       print('Received', msg)
       await request_handler(msg)
     except Exception as e:
-      print('[LOOP ERROR]', e)
+      pass
+      # print('[LOOP ERROR]', e)
 
 if __name__ == '__main__':
     asyncio.run(main())
